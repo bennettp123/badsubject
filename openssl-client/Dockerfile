@@ -4,7 +4,7 @@ RUN apk add --no-cache \
   openssl
 
 WORKDIR /tmp
-COPy ca.crt .
+COPY ca.crt .
 
 CMD echo | openssl s_client -connect badsubject:443 -servername badsubject -CAfile ca.crt
 
