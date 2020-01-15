@@ -1,0 +1,47 @@
+FROM library/nginx:alpine
+
+RUN apk add --no-cache \
+    openssl
+
+WORKDIR /code
+COPY . /code
+
+RUN openssl genrsa \
+      -out ca.key 2048
+RUN openssl req \
+      -new \
+      -x509 \
+      -sha256 \
+      -nodes \
+      -key ca.key \
+      -out ca.crt \
+      -subj "/O=Example CA/"
+
+# note that this cert WILL NOT WORK with some versions on nodejs!
+# why is this so difficult!
+RUN openssl req \
+      -newkey rsa:2048 \
+      -nodes \
+      -out badsubject.csr \
+      -keyout badsubject.key \
+      -days 365 \
+      -config badsubject.cnf \
+      -text \
+      -batch \
+      -subj "/"
+RUN openssl x509 \
+      -req \
+      -in badsubject.csr \
+      -CA ca.crt \
+      -CAkey ca.key \
+      -CAcreateserial \
+      -out badsubject.crt
+
+RUN cat badsubject.crt ca.crt > badsubject.bundle.crt
+
+RUN cp -f badsubject.key /etc/ssl/private/badsubject.key
+RUN cp -f badsubject.bundle.crt /etc/ssl/badsubject.crt
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+

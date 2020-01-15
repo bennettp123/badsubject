@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  nodejs_10_client:
+    build: ./node-client
+    links:
+      - badsubject
+  nodejs_12_client:
+    build:
+      context: ./node-client
+      dockerfile: Dockerfile.node12
+    links:
+      - badsubject
+  openssl_client:
+    build: ./openssl-client
+    links:
+      - badsubject
+  badsubject:
+    build: ./badsubject
+
