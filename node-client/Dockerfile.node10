@@ -1,4 +1,4 @@
-FROM library/node:alpine
+FROM library/node:10-alpine
 
 WORKDIR /code
 COPY . /code

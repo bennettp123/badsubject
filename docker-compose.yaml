@@ -1,7 +1,15 @@
 version: "3.7"
 services:
+  nodejs_latest_client:
+    build:
+      context: ./node-client
+      dockerfile: Dockerfile
+    links:
+      - badsubject
   nodejs_10_client:
-    build: ./node-client
+    build:
+      context: ./node-client
+      dockerfile: Dockerfile.node10
     links:
       - badsubject
   nodejs_12_client:
